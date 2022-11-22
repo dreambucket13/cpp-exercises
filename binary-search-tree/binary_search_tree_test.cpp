@@ -43,7 +43,7 @@ TEST_CASE("data_is_retained")
     auto tested = make_tree<uint32_t>({4});
     test_leaf<uint32_t>(tested, 4, false, false);
 }
-#define EXERCISM_RUN_ALL_TESTS
+//#define EXERCISM_RUN_ALL_TESTS
 #if defined(EXERCISM_RUN_ALL_TESTS)
 
 TEST_CASE("smaller_number_at_left_node")

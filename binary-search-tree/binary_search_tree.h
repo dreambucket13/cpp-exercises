@@ -5,73 +5,85 @@
 
 namespace binary_search_tree {
     
-    template <class T>
-    class node{
-        private:
-            T nodeValue;
-            node<T>* leftPtr;
-            node<T>* rightPtr;
+    // template <class T>
+    // class node{
+    //     private:
+    //         T nodeValue;
+    //         node<T>* leftPtr;
+    //         node<T>* rightPtr;
 
-        public:
-            node(T insertedValue) : nodeValue(insertedValue), leftPtr(nullptr), rightPtr(nullptr)
-            {
+    //     public:
+    //         node(T insertedValue) : nodeValue(insertedValue), leftPtr(nullptr), rightPtr(nullptr)
+    //         {
 
-            }
+    //         }
 
-            T getValue(){
-                return nodeValue;
-            }
+    //         T getValue(){
+    //             return nodeValue;
+    //         }
 
-            node<T>* left(){
-                return leftPtr;
-            }
+    //         node<T>* left(){
+    //             return leftPtr;
+    //         }
 
-            node<T>* right(){
-                return rightPtr;
-            }
+    //         node<T>* right(){
+    //             return rightPtr;
+    //         }
 
-            void setLeft(node<T>* ptr){
-                leftPtr = ptr;
-            }
+    //         void setLeft(node<T>* ptr){
+    //             leftPtr = ptr;
+    //         }
 
-            void setRight(node<T>* ptr){
-                rightPtr = ptr;
-            }
+    //         void setRight(node<T>* ptr){
+    //             rightPtr = ptr;
+    //         }
 
-    };
+    // };
 
     template <class T>
     class binary_tree {
 
         private:
 
-            node<T>* currentNodePtr;
-            node<T>* headPtr;
+            std::unique_ptr<binary_tree<T>> currentNodePtr;
+            std::unique_ptr<binary_tree<T>> headPtr;
+
+            T nodeValue;
+            std::unique_ptr<binary_tree<T>> leftPtr;
+            std::unique_ptr<binary_tree<T>> rightPtr;
 
         public:
 
-            binary_tree(T data) : currentNodePtr(nullptr), headPtr(nullptr)  {
+            binary_tree(T data) : currentNodePtr(nullptr), leftPtr(nullptr), rightPtr(nullptr)  {
                 insert(data);
             }
 
-            node<T>* left() {
-                return currentNodePtr->left();
+            std::unique_ptr<binary_tree<T>> left() {
+                return leftPtr;
             }
 
-            node<T>* right() {
-                
-                return currentNodePtr->right();
+            std::unique_ptr<binary_tree<T>> right() {
+                return rightPtr;
+            }
+
+            void setRight(std::unique_ptr<binary_tree<T>> ptr){
+                rightPtr = ptr;
+            }
+
+            void setLeft(std::unique_ptr<binary_tree<T>> ptr){
+                leftPtr = ptr;
             }
 
             T data() {
-                return currentNodePtr->getValue();
+                return nodeValue;
             }
 
-            node<T>* insert(T data){
+            std::unique_ptr<binary_tree<T>> insert(T data){
 
                 if (currentNodePtr == nullptr){
 
-                    node<T>* newNodePtr = new node(data);
+                    std::unique_ptr<binary_tree<T>> newNodePtr = new binary_tree<T>(data);
+                    
                     currentNodePtr = newNodePtr;
 
                     if (headPtr == nullptr){
@@ -81,10 +93,10 @@ namespace binary_search_tree {
                     return currentNodePtr;
                 }
 
-                if (data > currentNodePtr->getValue()){
+                if (data > currentNodePtr->data()){
                     currentNodePtr->setRight(insert(data));
                     return currentNodePtr;
-                } else if (data <= currentNodePtr->getValue()){
+                } else if (data <= currentNodePtr->data()){
                     currentNodePtr->setLeft(insert(data));
                     return currentNodePtr;
                 }
