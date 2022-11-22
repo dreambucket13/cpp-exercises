@@ -5,6 +5,8 @@
 
 namespace binary_search_tree {
     
+    //commented out - implementation doesn't seem to include separate node class...each leaf is of type tree_ptr<T>?
+
     // template <class T>
     // class node{
     //     private:
@@ -45,60 +47,57 @@ namespace binary_search_tree {
 
         private:
 
-            std::unique_ptr<binary_tree<T>> currentNodePtr;
-            std::unique_ptr<binary_tree<T>> headPtr;
+            std::shared_ptr<binary_tree<T>> currentNodePtr;
+            std::shared_ptr<binary_tree<T>> headPtr;
 
             T nodeValue;
-            std::unique_ptr<binary_tree<T>> leftPtr;
-            std::unique_ptr<binary_tree<T>> rightPtr;
+            std::shared_ptr<binary_tree<T>> leftPtr;
+            std::shared_ptr<binary_tree<T>> rightPtr;
 
         public:
-
-            binary_tree(T data) : currentNodePtr(nullptr), leftPtr(nullptr), rightPtr(nullptr)  {
-                insert(data);
+            // auto tree = tree_ptr<T>(new binary_search_tree::binary_tree<T>(*data_iter));
+            binary_tree(T data) {
+                nodeValue = data;
+                leftPtr = nullptr;
+                rightPtr = nullptr;
             }
 
-            std::unique_ptr<binary_tree<T>> left() {
+            std::shared_ptr<binary_tree<T>> left() {
                 return leftPtr;
             }
 
-            std::unique_ptr<binary_tree<T>> right() {
+            std::shared_ptr<binary_tree<T>> right() {
                 return rightPtr;
             }
 
-            void setRight(std::unique_ptr<binary_tree<T>> ptr){
+            std::shared_ptr<binary_tree<T>> setRight(std::shared_ptr<binary_tree<T>> ptr){
                 rightPtr = ptr;
+                return rightPtr;
             }
 
-            void setLeft(std::unique_ptr<binary_tree<T>> ptr){
+            std::shared_ptr<binary_tree<T>> setLeft(std::shared_ptr<binary_tree<T>> ptr){
                 leftPtr = ptr;
+                return leftPtr;
             }
 
             T data() {
                 return nodeValue;
             }
 
-            std::unique_ptr<binary_tree<T>> insert(T data){
+            std::shared_ptr<binary_tree<T>> insert(T data){
 
                 if (currentNodePtr == nullptr){
 
-                    std::unique_ptr<binary_tree<T>> newNodePtr = new binary_tree<T>(data);
-                    
+                    std::shared_ptr<binary_tree<T>> newNodePtr = std::shared_ptr<binary_tree<T>> (new binary_tree<T>(data));
                     currentNodePtr = newNodePtr;
-
-                    if (headPtr == nullptr){
-                        headPtr = newNodePtr;
-                    }
-
                     return currentNodePtr;
+
                 }
 
                 if (data > currentNodePtr->data()){
-                    currentNodePtr->setRight(insert(data));
-                    return currentNodePtr;
+                    return currentNodePtr->setRight(insert(data));
                 } else if (data <= currentNodePtr->data()){
-                    currentNodePtr->setLeft(insert(data));
-                    return currentNodePtr;
+                    return currentNodePtr->setLeft(insert(data));
                 }
 
                 //should never get here
