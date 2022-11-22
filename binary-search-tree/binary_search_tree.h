@@ -82,7 +82,8 @@ namespace binary_search_tree {
             }
 
             std::unique_ptr<binary_tree<T>> insert(T data){
-
+                
+                //TODO fix this
                 if (this.get() == nullptr){
 
                     std::unique_ptr<binary_tree<T>> newNodePtr = std::unique_ptr<binary_tree<T>> (new binary_tree<T>(data));
