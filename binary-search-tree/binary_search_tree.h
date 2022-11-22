@@ -47,12 +47,19 @@ namespace binary_search_tree {
 
         private:
 
-            std::shared_ptr<binary_tree<T>> currentNodePtr;
-            std::shared_ptr<binary_tree<T>> headPtr;
-
             T nodeValue;
-            std::shared_ptr<binary_tree<T>> leftPtr;
-            std::shared_ptr<binary_tree<T>> rightPtr;
+            std::unique_ptr<binary_tree<T>> leftPtr;
+            std::unique_ptr<binary_tree<T>> rightPtr;
+
+            std::unique_ptr<binary_tree<T>> setRight(std::unique_ptr<binary_tree<T>> ptr){
+                rightPtr = ptr;
+                return rightPtr;
+            }
+
+            std::unique_ptr<binary_tree<T>> setLeft(std::unique_ptr<binary_tree<T>> ptr){
+                leftPtr = ptr;
+                return leftPtr;
+            }
 
         public:
             // auto tree = tree_ptr<T>(new binary_search_tree::binary_tree<T>(*data_iter));
@@ -62,33 +69,23 @@ namespace binary_search_tree {
                 rightPtr = nullptr;
             }
 
-            std::shared_ptr<binary_tree<T>> left() {
+            std::unique_ptr<binary_tree<T>> left() {
                 return leftPtr;
             }
 
-            std::shared_ptr<binary_tree<T>> right() {
+            std::unique_ptr<binary_tree<T>> right() {
                 return rightPtr;
-            }
-
-            std::shared_ptr<binary_tree<T>> setRight(std::shared_ptr<binary_tree<T>> ptr){
-                rightPtr = ptr;
-                return rightPtr;
-            }
-
-            std::shared_ptr<binary_tree<T>> setLeft(std::shared_ptr<binary_tree<T>> ptr){
-                leftPtr = ptr;
-                return leftPtr;
             }
 
             T data() {
                 return nodeValue;
             }
 
-            std::shared_ptr<binary_tree<T>> insert(T data){
+            std::unique_ptr<binary_tree<T>> insert(T data){
 
-                if (currentNodePtr == nullptr){
+                if (this.get() == nullptr){
 
-                    std::shared_ptr<binary_tree<T>> newNodePtr = std::shared_ptr<binary_tree<T>> (new binary_tree<T>(data));
+                    std::unique_ptr<binary_tree<T>> newNodePtr = std::unique_ptr<binary_tree<T>> (new binary_tree<T>(data));
                     currentNodePtr = newNodePtr;
                     return currentNodePtr;
 
