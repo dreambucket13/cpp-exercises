@@ -50,16 +50,7 @@ namespace binary_search_tree {
             T nodeValue;
             std::unique_ptr<binary_tree<T>> leftPtr;
             std::unique_ptr<binary_tree<T>> rightPtr;
-
-            std::unique_ptr<binary_tree<T>> setRight(std::unique_ptr<binary_tree<T>> ptr){
-                rightPtr = ptr;
-                return rightPtr;
-            }
-
-            std::unique_ptr<binary_tree<T>> setLeft(std::unique_ptr<binary_tree<T>> ptr){
-                leftPtr = ptr;
-                return leftPtr;
-            }
+            std::unique_ptr<binary_tree<T>> currentPtr;
 
         public:
             // auto tree = tree_ptr<T>(new binary_search_tree::binary_tree<T>(*data_iter));
@@ -67,6 +58,7 @@ namespace binary_search_tree {
                 nodeValue = data;
                 leftPtr = nullptr;
                 rightPtr = nullptr;
+                currentPtr = this;
             }
 
             std::unique_ptr<binary_tree<T>> left() {
@@ -81,21 +73,24 @@ namespace binary_search_tree {
                 return nodeValue;
             }
 
-            std::unique_ptr<binary_tree<T>> insert(T data){
+            std::unique_ptr<binary_tree<T>> insert(T addedData){
                 
                 //TODO fix this
-                if (this.get() == nullptr){
+                if (currentPtr == nullptr){
 
-                    std::unique_ptr<binary_tree<T>> newNodePtr = std::unique_ptr<binary_tree<T>> (new binary_tree<T>(data));
-                    currentNodePtr = newNodePtr;
-                    return currentNodePtr;
+                    std::unique_ptr<binary_tree<T>> newNodePtr = std::unique_ptr<binary_tree<T>> (new binary_tree<T>(addedData));
+                    return newNodePtr;
 
                 }
 
-                if (data > currentNodePtr->data()){
-                    return currentNodePtr->setRight(insert(data));
-                } else if (data <= currentNodePtr->data()){
-                    return currentNodePtr->setLeft(insert(data));
+                if (addedData > data()){
+                    // current.left = insert_value(v,current.left);
+                    // return current;
+                    this->leftPtr = insert(addedData);
+                    return currentPtr;
+                } else if (addedData <= data()){
+                    this->rightPtr = insert(addedData);
+                    return currentPtr;
                 }
 
                 //should never get here
