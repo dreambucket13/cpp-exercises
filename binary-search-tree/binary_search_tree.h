@@ -50,7 +50,6 @@ namespace binary_search_tree {
             T nodeValue;
             std::unique_ptr<binary_tree<T>> leftPtr;
             std::unique_ptr<binary_tree<T>> rightPtr;
-            std::unique_ptr<binary_tree<T>> currentPtr;
 
         public:
             // auto tree = tree_ptr<T>(new binary_search_tree::binary_tree<T>(*data_iter));
@@ -58,7 +57,6 @@ namespace binary_search_tree {
                 nodeValue = data;
                 leftPtr = nullptr;
                 rightPtr = nullptr;
-                currentPtr = this;
             }
 
             std::unique_ptr<binary_tree<T>> left() {
@@ -74,23 +72,27 @@ namespace binary_search_tree {
             }
 
             std::unique_ptr<binary_tree<T>> insert(T addedData){
-                
-                //TODO fix this
-                if (currentPtr == nullptr){
+                //my old java implementation
+                // current.left = insert_value(v,current.left);
+                // return current;
+                if (addedData <= data()){
 
-                    std::unique_ptr<binary_tree<T>> newNodePtr = std::unique_ptr<binary_tree<T>> (new binary_tree<T>(addedData));
-                    return newNodePtr;
+                    if (leftPtr == nullptr){
+                        std::unique_ptr<binary_tree<T>> leftPtr = std::unique_ptr<binary_tree<T>> (new binary_tree<T>(addedData));
+                    } else {
+                        leftPtr = insert(addedData);
+                    }
 
-                }
+                    return leftPtr;
 
-                if (addedData > data()){
-                    // current.left = insert_value(v,current.left);
-                    // return current;
-                    this->leftPtr = insert(addedData);
-                    return currentPtr;
-                } else if (addedData <= data()){
-                    this->rightPtr = insert(addedData);
-                    return currentPtr;
+                } else if (addedData > data()){
+                    if (rightPtr == nullptr){
+                        std::unique_ptr<binary_tree<T>> rightPtr = std::unique_ptr<binary_tree<T>> (new binary_tree<T>(addedData));
+                    } else {
+                        rightPtr = insert(addedData);
+                    }
+
+                    return rightPtr;
                 }
 
                 //should never get here
