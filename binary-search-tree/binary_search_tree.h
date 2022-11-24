@@ -50,6 +50,7 @@ namespace binary_search_tree {
             T nodeValue;
             std::unique_ptr<binary_tree<T>> leftPtr;
             std::unique_ptr<binary_tree<T>> rightPtr;
+            static std::unique_ptr<binary_tree<T>> rootPtr;
 
         public:
             // auto tree = tree_ptr<T>(new binary_search_tree::binary_tree<T>(*data_iter));
@@ -57,14 +58,15 @@ namespace binary_search_tree {
                 nodeValue = data;
                 leftPtr = nullptr;
                 rightPtr = nullptr;
+
             }
 
             std::unique_ptr<binary_tree<T>> left() {
-                return leftPtr;
+                return std::move(leftPtr);
             }
 
             std::unique_ptr<binary_tree<T>> right() {
-                return rightPtr;
+                return std::move(rightPtr);
             }
 
             T data() {
@@ -78,24 +80,20 @@ namespace binary_search_tree {
                 if (addedData <= data()){
 
                     if (leftPtr == nullptr){
-                        std::unique_ptr<binary_tree<T>> leftPtr = std::unique_ptr<binary_tree<T>> (new binary_tree<T>(addedData));
-                    } else {
-                        leftPtr = insert(addedData);
+                        leftPtr = std::unique_ptr<binary_tree<T>> (new binary_tree<T>(addedData));
                     }
 
-                    return leftPtr;
+                    return std::move(leftPtr);
 
                 } else if (addedData > data()){
-                    if (rightPtr == nullptr){
-                        std::unique_ptr<binary_tree<T>> rightPtr = std::unique_ptr<binary_tree<T>> (new binary_tree<T>(addedData));
-                    } else {
-                        rightPtr = insert(addedData);
-                    }
 
-                    return rightPtr;
+                    if (rightPtr == nullptr){
+                        rightPtr = std::unique_ptr<binary_tree<T>> (new binary_tree<T>(addedData));
+                    } 
+
+                    return std::move(rightPtr);
                 }
 
-                //should never get here
                 return nullptr;
 
             }
