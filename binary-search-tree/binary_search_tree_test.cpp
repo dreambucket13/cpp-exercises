@@ -54,36 +54,36 @@ TEST_CASE("smaller_number_at_left_node")
     test_leaf<uint32_t>(tested->left(), 2, false, false);
 }
 
-// TEST_CASE("same_number_at_left_node")
-// {
-//     auto tested = make_tree<uint32_t>({4, 4});
+TEST_CASE("same_number_at_left_node")
+{
+    auto tested = make_tree<uint32_t>({4, 4});
 
-//     test_leaf<uint32_t>(tested, 4, true, false);
-//     test_leaf<uint32_t>(tested->left(), 4, false, false);
-// }
+    test_leaf<uint32_t>(tested, 4, true, false);
+    test_leaf<uint32_t>(tested->left(), 4, false, false);
+}
 
-// TEST_CASE("greater_number_at_right_node")
-// {
-//     auto tested = make_tree<uint32_t>({4, 5});
+TEST_CASE("greater_number_at_right_node")
+{
+    auto tested = make_tree<uint32_t>({4, 5});
     
-//     test_leaf<uint32_t>(tested, 4, false, true);
-//     test_leaf<uint32_t>(tested->right(), 5, false, false);
-// }
+    test_leaf<uint32_t>(tested, 4, false, true);
+    test_leaf<uint32_t>(tested->right(), 5, false, false);
+}
 
-// TEST_CASE("can_create_complex_tree")
-// {
-//     auto tested = make_tree<uint32_t>({4, 2, 6, 1, 3, 5, 7});
+TEST_CASE("can_create_complex_tree")
+{
+    auto tested = make_tree<uint32_t>({4, 2, 6, 1, 3, 5, 7});
 
-//     test_leaf<uint32_t>(tested, 4, true, true);
-//     test_leaf<uint32_t>(tested->left(), 2, true, true);
-//     test_leaf<uint32_t>(tested->right(), 6, true, true);
+    test_leaf<uint32_t>(tested, 4, true, true);
+    test_leaf<uint32_t>(tested->left(), 2, true, true);
+    test_leaf<uint32_t>(tested->right(), 6, true, true);
 
-//     test_leaf<uint32_t>(tested->left()->left(), 1, false, false);
-//     test_leaf<uint32_t>(tested->left()->right(), 3, false, false);
+    test_leaf<uint32_t>(tested->left()->left(), 1, false, false);
+    test_leaf<uint32_t>(tested->left()->right(), 3, false, false);
 
-//     test_leaf<uint32_t>(tested->right()->left(), 5, false, false);
-//     test_leaf<uint32_t>(tested->right()->right(), 7, false, false);
-// }
+    test_leaf<uint32_t>(tested->right()->left(), 5, false, false);
+    test_leaf<uint32_t>(tested->right()->right(), 7, false, false);
+}
 
 // The tests below require an implementation of an iterator.
 // You can get more details here: http://www.cplusplus.com/reference/iterator/
