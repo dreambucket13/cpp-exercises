@@ -2,6 +2,7 @@
 #define BINARY_SEARCH_TREE_H
 
 #include <memory>
+#include <vector>
 
 namespace binary_search_tree {
 
@@ -14,12 +15,22 @@ namespace binary_search_tree {
             std::unique_ptr<binary_tree<T>> leftPtr;
             std::unique_ptr<binary_tree<T>> rightPtr;
 
+            class Iterator {
+
+
+            };
+
+            std::unique_ptr<binary_tree<T>> root = nullptr;
+            std::size_t size = 0;
+
+
         public:
-            // auto tree = tree_ptr<T>(new binary_search_tree::binary_tree<T>(*data_iter));
+
             binary_tree(T data) {
                 nodeValue = data;
                 leftPtr = nullptr;
                 rightPtr = nullptr;
+                ++size;
             }
 
             //& after type returns a reference to the unique ptr without 
@@ -37,9 +48,6 @@ namespace binary_search_tree {
             }
 
             void insert(T addedData){
-                //my old java implementation
-                // current.left = insert_value(v,current.left);
-                // return current;
 
                 if (addedData <= data()){
 
@@ -49,7 +57,7 @@ namespace binary_search_tree {
                         leftPtr->insert(addedData);
                     }
 
-                } else if (addedData > data()){
+                } else {
 
                     if (right() == nullptr){
                         rightPtr = std::unique_ptr<binary_tree<T>> (new binary_tree<T>(addedData));
@@ -61,6 +69,13 @@ namespace binary_search_tree {
 
             }
 
+            const std::unique_ptr<binary_tree<T>>& min() {
+                    if (left() == nullptr){
+                        return this;
+                    } else {
+                        leftPtr->min();
+                    }
+            }            
 
     };
 
