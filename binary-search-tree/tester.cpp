@@ -16,11 +16,7 @@ int main(){
     test_tree->insert(6);
     test_tree->insert(3);
 
-    auto minPtr2 = test_tree->min();
-
-    // cout << *test_tree->min()->data();
-
-    //test_tree->sort();
+    test_tree->sort();
 
     return 0;
 }
