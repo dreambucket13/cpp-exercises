@@ -66,7 +66,7 @@ class binary_tree {
         const std::unique_ptr<binary_tree<T>>& min() {
             
             if (left() != nullptr){    
-                leftPtr->min();
+                return std::move(leftPtr->min());
             } else {
                 minPtr = std::unique_ptr<binary_tree<T>> (this);           
                 return minPtr;
