@@ -88,7 +88,7 @@ class binary_tree {
                 
                 index = root;
 
-                //if index->left() == deleted node, set index->left to deleted->right()
+                //if index->left() == deleted node, set index->right to deleted->left()
 
                 //if deleted node is root, set to null
 
