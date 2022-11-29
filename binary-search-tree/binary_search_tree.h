@@ -29,15 +29,15 @@ class binary_tree {
 
         //& after type returns a reference to the unique ptr without 
         //changing ownership.
-        const std::unique_ptr<binary_tree<T>>& left() {
+        std::unique_ptr<binary_tree<T>>& left() {
             return leftPtr;
         }
 
-        const std::unique_ptr<binary_tree<T>>& right() {
+        std::unique_ptr<binary_tree<T>>& right() {
             return rightPtr;
         }
 
-        T data() const {
+        T data() {
             return nodeValue;
         }
 
@@ -65,7 +65,7 @@ class binary_tree {
 
         }
 
-        const binary_tree<T>* min() {
+        binary_tree<T>* min() {
             
             if (left() == nullptr){              
                 return this;
@@ -80,7 +80,7 @@ class binary_tree {
 
             binary_tree<T>* root = this;
             binary_tree<T>* index;
-            const binary_tree<T>* deletedNode = nullptr;
+            binary_tree<T>* deletedNode = nullptr;
 
             sortedList = std::vector<T>();
 
