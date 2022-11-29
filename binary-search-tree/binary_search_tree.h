@@ -37,7 +37,7 @@ class binary_tree {
             return rightPtr;
         }
 
-        T data() {
+        const T data() {
             return nodeValue;
         }
 
@@ -63,23 +63,21 @@ class binary_tree {
 
         }
 
-        const std::unique_ptr<binary_tree<T>>& min() {
+        const binary_tree<T>* min() {
             
-            if (left() != nullptr){    
-                return std::move(leftPtr->min());
+            if (left() == nullptr){              
+                return this;
             } else {
-                minPtr = std::unique_ptr<binary_tree<T>> (this);           
-                return minPtr;
+                return leftPtr->min();
             }
 
         }  
 
-        std::vector<T> sort (){
+        std::vector<T> sort(){
 
             //if min has a left pointer, set min's rightPtr to parents leftPtr
 
             sortedList = std::vector<T>();
-
 
             return sortedList;
         }
