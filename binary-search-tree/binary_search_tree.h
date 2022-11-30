@@ -93,7 +93,7 @@ class binary_tree {
                 deletedNode = min();
                 auto sortedData = deletedNode->data(); 
 
-       
+       //mins parents left is mins right
                 if (deletedNode->rightPtr.get() != nullptr){
 
                     auto rightData = deletedNode->rightPtr->data();
