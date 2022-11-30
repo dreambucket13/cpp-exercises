@@ -43,12 +43,13 @@ class binary_tree {
 
         void insert(T addedData){
 
+            initialList.push_back(addedData);
+            ++size;
+
             if (addedData <= data()){
 
                 if (left() == nullptr){
                     leftPtr = std::unique_ptr<binary_tree<T>> (new binary_tree<T>(addedData));
-                    initialList.push_back(addedData);
-                    ++size;
                 } else {
                     leftPtr->insert(addedData);
                 }
@@ -57,8 +58,6 @@ class binary_tree {
 
                 if (right() == nullptr){
                     rightPtr = std::unique_ptr<binary_tree<T>> (new binary_tree<T>(addedData));
-                    initialList.push_back(addedData);        
-                    ++size;
                 } else {
                     rightPtr->insert(addedData);
                 }
@@ -86,39 +85,48 @@ class binary_tree {
         std::vector<T> sort(){
 
             binary_tree<T>* root = this;
-            //binary_tree<T>* index;
             binary_tree<T>* deletedNode;
 
             sortedList = std::vector<T>();
 
-            while (root != nullptr){
+            while (root){
 
-                deletedNode = min();
+                deletedNode = root->min();
                 auto sortedData = deletedNode->data(); 
                 sortedList.push_back(sortedData);
 
-                //set min's parent's left pointer to mins right.
-                //This will also destroy the original min->left pointer.
 
-                //TODO - handle case where there is no parent
-                if (deletedNode == this){
-                    rightPtr.swap();
-                }
-
-                minParent->leftPtr = std::move(deletedNode->rightPtr);
-
-                //if deleted node is root, set to null and reset the pointers
-                if (deletedNode == this){
+                if ( root->leftPtr == nullptr && root->rightPtr ==  nullptr) {
+                    //if root has no children, null out
                     root = nullptr;
-                    leftPtr.reset();
-                    rightPtr.reset();
+
+                } else if (deletedNode == this){
+                    
+                    //move root to the right
+                    //root = rightPtr.get();
+                    nodeValue = rightPtr->nodeValue;
+                    leftPtr = std::move(rightPtr->leftPtr);
+                    rightPtr = std::move(rightPtr->rightPtr);
+
+                } else {
+                    //set min's parent's left pointer to mins right.
+                    //This will also destroy the original min->left pointer.
+                    minParent->leftPtr = std::move(deletedNode->rightPtr);
                 }
 
             }
 
             //once I have the sorted list, rebuild the tree
+            //the max value will remain with null left and right pointers
+            //reset it with the first insert manually then insert normally
+
+            nodeValue = initialList[0];
+            initialList.erase(initialList.begin());
+
             for (T rebuild : initialList){
                 insert(rebuild);
+                //insert will insert again...I know I know
+                initialList.pop_back();
             }
 
             return sortedList;
