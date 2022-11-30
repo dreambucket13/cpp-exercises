@@ -24,7 +24,7 @@ class binary_tree {
             nodeValue = data;
             leftPtr = nullptr;
             rightPtr = nullptr;
-            ++size;
+            initialList.push_back(nodeValue);
         }
 
         //& after type returns a reference to the unique ptr without 
@@ -47,6 +47,7 @@ class binary_tree {
 
                 if (left() == nullptr){
                     leftPtr = std::unique_ptr<binary_tree<T>> (new binary_tree<T>(addedData));
+                    initialList.push_back(addedData);
                     ++size;
                 } else {
                     leftPtr->insert(addedData);
@@ -56,6 +57,7 @@ class binary_tree {
 
                 if (right() == nullptr){
                     rightPtr = std::unique_ptr<binary_tree<T>> (new binary_tree<T>(addedData));
+                    initialList.push_back(addedData);        
                     ++size;
                 } else {
                     rightPtr->insert(addedData);
@@ -70,6 +72,11 @@ class binary_tree {
             if (left() == nullptr){              
                 return this;
             } else {
+
+                 if (left()->left() == nullptr){
+                    minParent = this;
+                 }
+
                 return leftPtr->min();
             }
 
@@ -80,36 +87,39 @@ class binary_tree {
 
             binary_tree<T>* root = this;
             //binary_tree<T>* index;
-            binary_tree<T>* deletedNode = nullptr;
+            binary_tree<T>* deletedNode;
 
             sortedList = std::vector<T>();
 
             while (root != nullptr){
 
-                //if leftPtr == deleted node, set this->leftPtr to rightPtr
-
-                //if deleted node is root, set to null
-
                 deletedNode = min();
                 auto sortedData = deletedNode->data(); 
-
-       //mins parents left is mins right
-                if (deletedNode->rightPtr.get() != nullptr){
-
-                    auto rightData = deletedNode->rightPtr->data();
-                    deletedNode->nodeValue = rightData;
-                    deletedNode->rightPtr.reset();
-                }
-
                 sortedList.push_back(sortedData);
 
-                if (min() == root){
-                    break;
+                //set min's parent's left pointer to mins right.
+                //This will also destroy the original min->left pointer.
+
+                //TODO - handle case where there is no parent
+                if (deletedNode == this){
+                    rightPtr.swap();
+                }
+
+                minParent->leftPtr = std::move(deletedNode->rightPtr);
+
+                //if deleted node is root, set to null and reset the pointers
+                if (deletedNode == this){
+                    root = nullptr;
+                    leftPtr.reset();
+                    rightPtr.reset();
                 }
 
             }
 
             //once I have the sorted list, rebuild the tree
+            for (T rebuild : initialList){
+                insert(rebuild);
+            }
 
             return sortedList;
 
@@ -120,7 +130,9 @@ class binary_tree {
         T nodeValue;
         std::unique_ptr<binary_tree<T>> leftPtr;
         std::unique_ptr<binary_tree<T>> rightPtr;
+        binary_tree<T>* minParent;
         std::vector<T> sortedList;
+        std::vector<T> initialList;
         std::size_t size = 0;      
 
 };
