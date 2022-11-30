@@ -79,26 +79,41 @@ class binary_tree {
         std::vector<T> sort(){
 
             binary_tree<T>* root = this;
-            binary_tree<T>* index;
+            //binary_tree<T>* index;
             binary_tree<T>* deletedNode = nullptr;
 
             sortedList = std::vector<T>();
 
             while (root != nullptr){
-                
-                index = root;
 
-                //if index->left() == deleted node, set deleted->right to index->left()
+                //if leftPtr == deleted node, set this->leftPtr to rightPtr
 
                 //if deleted node is root, set to null
 
                 deletedNode = min();
-                auto sortedData = deletedNode->data();
-                sortedList.push_back(sortedData);
+                auto sortedData = deletedNode->data(); 
+
+       
+                if (deletedNode->rightPtr.get() != nullptr){
+                    
+                    auto rightData = deletedNode->rightPtr->data();
+                    deletedNode->nodeValue = rightData;
+                    deletedNode->rightPtr.reset();
+
+                    sortedList.push_back(sortedData);
+
+                    if (min() == root){
+                        break;
+                    }
+
+                }
 
             }
 
+            //once I have the sorted list, rebuild the tree
+
             return sortedList;
+
         }
 
     private:
