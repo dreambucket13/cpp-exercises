@@ -95,17 +95,16 @@ class binary_tree {
 
        
                 if (deletedNode->rightPtr.get() != nullptr){
-                    
+
                     auto rightData = deletedNode->rightPtr->data();
                     deletedNode->nodeValue = rightData;
                     deletedNode->rightPtr.reset();
+                }
 
-                    sortedList.push_back(sortedData);
+                sortedList.push_back(sortedData);
 
-                    if (min() == root){
-                        break;
-                    }
-
+                if (min() == root){
+                    break;
                 }
 
             }
