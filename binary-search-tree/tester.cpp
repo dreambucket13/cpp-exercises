@@ -15,6 +15,9 @@ int main(){
     test_tree->insert(2);
     test_tree->insert(6);
     test_tree->insert(3);
+    test_tree->insert(1);
+    test_tree->insert(5);
+    test_tree->insert(7);
 
     test_tree->sort();
 
