@@ -39,12 +39,12 @@ class binary_tree {
             
             Iterator begin(){
                 sort();
-                return Iterator(sortedList.begin());
+                return Iterator(sortedObjects.begin());
             }
 
             Iterator end(){
                 sort();
-                return Iterator(sortedList.end());
+                return Iterator(sortedObjects.end());
             }
 
         };    
@@ -109,7 +109,7 @@ class binary_tree {
         }
 
 
-        void sort(){
+        std::vector<binary_tree<T>*> sort(){
 
             //keep a list of dead-end nodes and the sorted objects.  
             //go left unless it is a dead end node, else go right.
@@ -123,44 +123,38 @@ class binary_tree {
             sortedList = std::vector<T>();
 
             while (!isIn(deadEnds, root)){
+                
+                binary_tree<T>* rawLeft = index->leftPtr.get();
+                binary_tree<T>* rawRight = index->rightPtr.get();
+                bool leftIsDeadEnd = isIn(deadEnds, rawLeft);
+                bool rightIsDeadEnd = isIn(deadEnds, rawRight);
+                bool objectIsSorted = isIn(sortedObjects, index);
 
-                if (index->leftPtr.get() == nullptr && !isIn(sortedObjects, index)){
+                if (leftIsDeadEnd && rightIsDeadEnd){
+                    deadEnds.push_back(index);
+                   // index = root;
+                } 
+                
+                if ( (rawLeft == nullptr || leftIsDeadEnd) && !objectIsSorted){
 
                     sortedObjects.push_back(index);
                     sortedList.push_back(index->nodeValue);
 
-                    if (index->rightPtr.get() == nullptr){
+                    if (rawRight == nullptr || rightIsDeadEnd){
                         deadEnds.push_back(index);
                     }
 
                     index = root;
 
-                } else if (index->leftPtr != nullptr && !isIn(deadEnds, index->leftPtr.get())){
-                    index = index->leftPtr.get();
-                } else if (index->rightPtr != nullptr && !isIn(deadEnds, index->rightPtr.get())) {
-                    index = index->rightPtr.get();
+                } else if (rawLeft != nullptr && !leftIsDeadEnd){
+                    index = rawLeft;
+                } else if (rawRight != nullptr && !rightIsDeadEnd) {
+                    index = rawRight;
                 } 
 
             }
 
-            //recursive version
-            //base case
-
-            // if (leftPtr == nullptr){
-
-            //     sortedObjects.push_back(this);
-
-            //     if (rightPtr == nullptr){
-            //         deadEnds.push_back(this);
-            //     }
-
-            //     root->sort();
-
-            // } else if (leftPtr != nullptr && !isIn(deadEnds, leftPtr.get())){
-            //     leftPtr->sort();
-            // } else if (rightPtr != nullptr && !isIn(deadEnds, rightPtr.get())) {
-            //     rightPtr->sort();
-            // } 
+            return sortedObjects;
             
         }
 };
