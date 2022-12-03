@@ -18,7 +18,7 @@ using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
         tree_ptr leftPtr;
         tree_ptr rightPtr;
         binary_tree<T>* parent;
-        std::vector<T> sortedList;
+
         std::vector<T> initialList;
         std::size_t size = 0;   
 
@@ -34,19 +34,43 @@ using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
             return false;
         }   
 
+        void internal_insert(T addedData){
+
+            if (addedData <= data()){
+
+                if (left() == nullptr){
+                    leftPtr = tree_ptr (new binary_tree<T>(addedData));
+                    leftPtr->parent = this;
+                } else {
+                    leftPtr->internal_insert(addedData);
+                }
+
+            } else {
+
+                if (right() == nullptr){
+                    rightPtr = tree_ptr (new binary_tree<T>(addedData));
+                    rightPtr->parent = this;
+                } else {
+                    rightPtr->internal_insert(addedData);
+                }
+
+            }
+
+        }
+
 
     public:
+
+        std::vector<T> sortedList;
 
         struct Iterator 
         {
 
-            //using tree_ptr<T> = std::unique_ptr<binary_search_tree::binary_tree<T>> 
-            //the iterator is looking for unique_ptrs to trees....
             using iterator_category = std::forward_iterator_tag;
             using difference_type   = std::ptrdiff_t;
-            using value_type        = binary_tree<T>;
-            using pointer           = binary_tree<T>*;
-            using reference         = binary_tree<T>&;
+            using value_type        = T;
+            using pointer           = T*;
+            using reference         = T&;
 
             Iterator(pointer ptr) : m_ptr(ptr) {}
 
@@ -60,9 +84,10 @@ using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
         private:
             pointer m_ptr;
         };
+    
 
-        Iterator begin() { return Iterator(&sortedObjects[0]); }
-        Iterator end()   { return Iterator(&sortedObjects.back()); }
+        Iterator begin() { return sortedList.begin(); }
+        Iterator end()   { return sortedList.end(); }
 
         binary_tree(T data) {
             nodeValue = data;
@@ -70,6 +95,11 @@ using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
             rightPtr = nullptr;
             initialList.push_back(nodeValue);
             ++size;
+
+            sortedObjects = std::vector<binary_tree<T>*>() ;
+            deadEnds = std::vector<binary_tree<T>*>();
+            sortedList = std::vector<T>();
+
         }
 
         //& after type returns a reference to the unique ptr without 
@@ -91,25 +121,9 @@ using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
             initialList.push_back(addedData);
             ++size;
 
-            if (addedData <= data()){
+            internal_insert(addedData);
 
-                if (left() == nullptr){
-                    leftPtr = tree_ptr (new binary_tree<T>(addedData));
-                    leftPtr->parent = this;
-                } else {
-                    leftPtr->insert(addedData);
-                }
-
-            } else {
-
-                if (right() == nullptr){
-                    rightPtr = tree_ptr (new binary_tree<T>(addedData));
-                    rightPtr->parent = this;
-                } else {
-                    rightPtr->insert(addedData);
-                }
-
-            }
+            sortedList = this->sort();
 
         }
 
@@ -123,7 +137,7 @@ using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
 
         }
 
-        std::vector<binary_tree<T>*> sort(){
+        std::vector<T>& sort(){
 
             //keep a list of dead-end nodes and the sorted objects.  
             //go left unless it is a dead end node, else go right.
@@ -132,9 +146,9 @@ using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
             binary_tree<T>* root = this;
             binary_tree<T>* index = root;
 
-            sortedObjects = std::vector<binary_tree<T>*>() ;
-            deadEnds = std::vector<binary_tree<T>*>();
-            sortedList = std::vector<T>();
+            sortedObjects.clear();
+            deadEnds.clear();
+            sortedList.clear();
 
             while (!isIn(deadEnds, root)){
                 
@@ -168,7 +182,7 @@ using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
 
             }
 
-            return sortedObjects;
+            return sortedList;
             
         }
 };
