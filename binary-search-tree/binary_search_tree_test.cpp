@@ -8,24 +8,24 @@
 
 // test data version: 1.0.0
 
-template<typename T>
+template <typename T>
 using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
 
-template<typename T>
-static void test_leaf(const tree_ptr<T> &tree, 
-                      const T& data, bool has_left, bool has_right)
+template <typename T>
+static void test_leaf(const tree_ptr<T> &tree,
+                      const T &data, bool has_left, bool has_right)
 {
     REQUIRE(data == tree->data());
-    REQUIRE((bool) tree->left() == has_left);
-    REQUIRE((bool) tree->right() == has_right);
+    REQUIRE((bool)tree->left() == has_left);
+    REQUIRE((bool)tree->right() == has_right);
 }
 
-template<typename T>
+template <typename T>
 static tree_ptr<T> make_tree(const std::vector<T> &data)
 {
     if (data.empty())
         return tree_ptr<T>(nullptr);
-    
+
     auto data_iter = data.begin();
     auto tree = tree_ptr<T>(new binary_search_tree::binary_tree<T>(*data_iter));
     ++data_iter;
@@ -65,7 +65,7 @@ TEST_CASE("same_number_at_left_node")
 TEST_CASE("greater_number_at_right_node")
 {
     auto tested = make_tree<uint32_t>({4, 5});
-    
+
     test_leaf<uint32_t>(tested, 4, false, true);
     test_leaf<uint32_t>(tested->right(), 5, false, false);
 }
@@ -88,62 +88,68 @@ TEST_CASE("can_create_complex_tree")
 // The tests below require an implementation of an iterator.
 // You can get more details here: http://www.cplusplus.com/reference/iterator/
 
-// template<typename T>
-// static void test_sort(const tree_ptr<T> &tree, const std::vector<T> &expected)
-// {
-//     std::vector<T> actual;
-//     for (auto& x : *tree) {
-//         actual.push_back(x);
-//     }
-//     REQUIRE(expected == actual);
-// }
+//#define ITERATOR
 
+#ifdef ITERATOR
+template <typename T>
+static void test_sort(const tree_ptr<T> &tree, const std::vector<T> &expected)
+{
+    std::vector<T> actual;
+    for (auto &x : *tree)
+    {
+        actual.push_back(x);
+    }
+    REQUIRE(expected == actual);
+}
 
-// TEST_CASE("can_sort_single_number")
-// {
-//     test_sort(make_tree<uint32_t>({2}), {2});
-// }
+TEST_CASE("can_sort_single_number")
+{
+    test_sort(make_tree<uint32_t>({2}), {2});
+}
 
-// TEST_CASE("can_sort_if_second_number_is_smaller_than_first")
-// {
-//     test_sort(make_tree<uint32_t>({2, 1}), {1, 2});
-// }
+TEST_CASE("can_sort_if_second_number_is_smaller_than_first")
+{
+    test_sort(make_tree<uint32_t>({2, 1}), {1, 2});
+}
 
-// TEST_CASE("can_sort_if_second_number_is_same_as_first")
-// {
-//     test_sort(make_tree<uint32_t>({2, 2}), {2, 2});
-// }
+TEST_CASE("can_sort_if_second_number_is_same_as_first")
+{
+    test_sort(make_tree<uint32_t>({2, 2}), {2, 2});
+}
 
-// TEST_CASE("can_sort_if_second_number_is_greater_than_first")
-// {
-//     test_sort(make_tree<uint32_t>({2, 3}), {2, 3});
-// }
+TEST_CASE("can_sort_if_second_number_is_greater_than_first")
+{
+    test_sort(make_tree<uint32_t>({2, 3}), {2, 3});
+}
 
-// TEST_CASE("can_sort_complex_tree")
-// {
-//     test_sort(make_tree<uint32_t>({2, 1, 3, 6, 7, 5}), {1, 2, 3, 5, 6, 7});
-// }
+TEST_CASE("can_sort_complex_tree")
+{
+    test_sort(make_tree<uint32_t>({2, 1, 3, 6, 7, 5}), {1, 2, 3, 5, 6, 7});
+}
+#endif
 
 // strings
 
-// TEST_CASE("can_create_complex_tree_strings")
-// {
-//     auto tested = make_tree<std::string>({"delicious", "ballon", "flag", "apple", "cat", "elispsis", "grains"});
+TEST_CASE("can_create_complex_tree_strings")
+{
+    auto tested = make_tree<std::string>({"delicious", "ballon", "flag", "apple", "cat", "elispsis", "grains"});
 
-//     test_leaf<std::string>(tested, "delicious", true, true);
-//     test_leaf<std::string>(tested->left(), "ballon", true, true);
-//     test_leaf<std::string>(tested->right(), "flag", true, true);
+    test_leaf<std::string>(tested, "delicious", true, true);
+    test_leaf<std::string>(tested->left(), "ballon", true, true);
+    test_leaf<std::string>(tested->right(), "flag", true, true);
 
-//     test_leaf<std::string>(tested->left()->left(), "apple", false, false);
-//     test_leaf<std::string>(tested->left()->right(), "cat", false, false);
+    test_leaf<std::string>(tested->left()->left(), "apple", false, false);
+    test_leaf<std::string>(tested->left()->right(), "cat", false, false);
 
-//     test_leaf<std::string>(tested->right()->left(), "elispsis", false, false);
-//     test_leaf<std::string>(tested->right()->right(), "grains", false, false);
-// }
+    test_leaf<std::string>(tested->right()->left(), "elispsis", false, false);
+    test_leaf<std::string>(tested->right()->right(), "grains", false, false);
+}
 
-// TEST_CASE("can_sort_complex_tree_strings")
-// {
-//     test_sort(make_tree<std::string>({"A", "few", "random", "strings", "that", "should", "be", "sorted"}), {"A", "be", "few", "random", "should", "sorted", "strings", "that"});
-// }
+#ifdef ITERATOR
+TEST_CASE("can_sort_complex_tree_strings")
+{
+    test_sort(make_tree<std::string>({"A", "few", "random", "strings", "that", "should", "be", "sorted"}), {"A", "be", "few", "random", "should", "sorted", "strings", "that"});
+}
+#endif
 
 //#endif

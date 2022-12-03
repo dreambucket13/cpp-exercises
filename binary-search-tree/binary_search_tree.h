@@ -10,21 +10,84 @@ namespace binary_search_tree {
 template <class T>
 class binary_tree {
 
+using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
+
+    private:
+
+        T nodeValue;
+        tree_ptr leftPtr;
+        tree_ptr rightPtr;
+        binary_tree<T>* parent;
+
+        std::vector<T> initialList;
+        std::size_t size = 0;   
+
+        std::vector<binary_tree<T>*> sortedObjects;
+        std::vector<binary_tree<T>*> deadEnds;
+
+        bool isIn(std::vector<binary_tree<T>*> treeVector, binary_tree<T>* key){
+            for (auto element : treeVector){
+                if (element == key){
+                    return true;
+                }
+            }
+            return false;
+        }   
+
+        void internal_insert(T addedData){
+
+            if (addedData <= data()){
+
+                if (left() == nullptr){
+                    leftPtr = tree_ptr (new binary_tree<T>(addedData));
+                    leftPtr->parent = this;
+                } else {
+                    leftPtr->internal_insert(addedData);
+                }
+
+            } else {
+
+                if (right() == nullptr){
+                    rightPtr = tree_ptr (new binary_tree<T>(addedData));
+                    rightPtr->parent = this;
+                } else {
+                    rightPtr->internal_insert(addedData);
+                }
+
+            }
+
+        }
+
+
     public:
 
-        class Iterator {
-            
-            Iterator begin(){
-                sort();
-                return Iterator(sortedList.begin());
-            }
+        std::vector<T> sortedList;
 
-            Iterator end(){
-                sort();
-                return Iterator(sortedList.end());
-            }
+        struct Iterator 
+        {
 
-        };    
+            using iterator_category = std::forward_iterator_tag;
+            using difference_type   = std::ptrdiff_t;
+            using value_type        = T;
+            using pointer           = T*;
+            using reference         = T&;
+
+            Iterator(pointer ptr) : m_ptr(ptr) {}
+
+            reference operator*() const { return *m_ptr; }
+            pointer operator->() { return m_ptr; }
+            Iterator& operator++() { m_ptr++; return *this; }  
+            Iterator operator++(int) { Iterator tmp = *this; ++(*this); return tmp; }
+            friend bool operator== (const Iterator& a, const Iterator& b) { return a.m_ptr == b.m_ptr; };
+            friend bool operator!= (const Iterator& a, const Iterator& b) { return a.m_ptr != b.m_ptr; };  
+
+        private:
+            pointer m_ptr;
+        };
+    
+
+        Iterator begin() { return sortedList.begin(); }
+        Iterator end()   { return sortedList.end(); }
 
         binary_tree(T data) {
             nodeValue = data;
@@ -32,15 +95,20 @@ class binary_tree {
             rightPtr = nullptr;
             initialList.push_back(nodeValue);
             ++size;
+
+            sortedObjects = std::vector<binary_tree<T>*>() ;
+            deadEnds = std::vector<binary_tree<T>*>();
+            sortedList = std::vector<T>();
+
         }
 
         //& after type returns a reference to the unique ptr without 
         //changing ownership.
-        std::unique_ptr<binary_tree<T>>& left() {
+        tree_ptr& left() {
             return leftPtr;
         }
 
-        std::unique_ptr<binary_tree<T>>& right() {
+        tree_ptr& right() {
             return rightPtr;
         }
 
@@ -53,25 +121,9 @@ class binary_tree {
             initialList.push_back(addedData);
             ++size;
 
-            if (addedData <= data()){
+            internal_insert(addedData);
 
-                if (left() == nullptr){
-                    leftPtr = std::unique_ptr<binary_tree<T>> (new binary_tree<T>(addedData));
-                    leftPtr->parent = this;
-                } else {
-                    leftPtr->insert(addedData);
-                }
-
-            } else {
-
-                if (right() == nullptr){
-                    rightPtr = std::unique_ptr<binary_tree<T>> (new binary_tree<T>(addedData));
-                    rightPtr->parent = this;
-                } else {
-                    rightPtr->insert(addedData);
-                }
-
-            }
+            sortedList = this->sort();
 
         }
 
@@ -85,99 +137,56 @@ class binary_tree {
 
         }
 
+        std::vector<T>& sort(){
 
-        std::vector<binary_tree<T>*> sort(){
+            //keep a list of dead-end nodes and the sorted objects.  
+            //go left unless it is a dead end node, else go right.
+            //a node is dead ended if it is min and does not have non-dead end children.
 
             binary_tree<T>* root = this;
-            binary_tree<T>* deletedNode;
+            binary_tree<T>* index = root;
 
-            sortedList = std::vector<T>();
+            sortedObjects.clear();
+            deadEnds.clear();
+            sortedList.clear();
 
-            while (root){
-
-                deletedNode = min();
-                auto sortedData = deletedNode->data(); 
-                sortedList.push_back(sortedData);
-
-
-                if ( leftPtr == nullptr && rightPtr ==  nullptr) {
-                    //if root has no children, null out
-                    root = nullptr;
-                    break;
-                }
-
-                if (deletedNode == root){
-            
-                    //move root to the right
-                    nodeValue = rightPtr->nodeValue;
-                    leftPtr = std::move(rightPtr->leftPtr);
-                    rightPtr = std::move(rightPtr->rightPtr);
-                    
-                    if (leftPtr != nullptr)                     
-                        leftPtr->parent = root;
-
-                    if (rightPtr != nullptr)
-                        rightPtr->parent = root;
-
-                    continue;
-                }
-
-                    //set min's parent's left pointer to mins right.
-                    //This will also destroy the original min->left pointer.
-
-                //if deleted node-> right is not null, swap pointers with parent
-                if (deletedNode->rightPtr != nullptr){
-                    //when you move a pointer, need to update parent too
-                    deletedNode->rightPtr->parent = deletedNode->parent;                        
-                    deletedNode->parent->leftPtr = std::move(deletedNode->rightPtr);
-
-                //otherwise, just reset the parent's left pointer
-                } else {
-                    deletedNode->parent->leftPtr.reset();
-                }
-
-            }
-
-            //once I have the sorted list, rebuild the tree 
-            //the max value will remain with null left and right pointers
-            //reset it with the first insert manually then insert normally
-
-            nodeValue = initialList[0];
-
-            for (T rebuild : initialList){
+            while (!isIn(deadEnds, root)){
                 
-                if (rebuild == initialList[0])
-                    continue;
+                binary_tree<T>* rawLeft = index->leftPtr.get();
+                binary_tree<T>* rawRight = index->rightPtr.get();
+                bool leftIsDeadEnd = isIn(deadEnds, rawLeft);
+                bool rightIsDeadEnd = isIn(deadEnds, rawRight);
+                bool objectIsSorted = isIn(sortedObjects, index);
 
-                insert(rebuild);
-                //insert will insert again...I know I know
-                initialList.pop_back();
-                --size;
+                if (leftIsDeadEnd && rightIsDeadEnd){
+                    deadEnds.push_back(index);
+                    index = root;
+                } 
+                
+                if ( (rawLeft == nullptr || leftIsDeadEnd) && !objectIsSorted){
+
+                    sortedObjects.push_back(index);
+                    sortedList.push_back(index->nodeValue);
+
+                    if (rawRight == nullptr || rightIsDeadEnd){
+                        deadEnds.push_back(index);
+                    }
+
+                    index = root;
+
+                } else if (rawLeft != nullptr && !leftIsDeadEnd){
+                    index = rawLeft;
+                } else if (rawRight != nullptr && !rightIsDeadEnd) {
+                    index = rawRight;
+                } 
+
             }
 
-            //and now, build the iterator.  I am sure there is a better way, but I need to build
-            //tree objects in the sorted order.
-
-            for (T sorted : sortedList){
-                sortedObjects.push_back(new binary_tree<T>(sorted));
-            }
-
-            return sortedObjects;
-
+            return sortedList;
+            
         }
-
-    private:
-
-        T nodeValue;
-        std::unique_ptr<binary_tree<T>> leftPtr;
-        std::unique_ptr<binary_tree<T>> rightPtr;
-        binary_tree<T>* parent;
-        std::vector<T> sortedList;
-        std::vector<binary_tree<T>*> sortedObjects;
-        std::vector<T> initialList;
-        std::size_t size = 0;      
-
 };
+
 
 }  // namespace binary_search_tree
 
