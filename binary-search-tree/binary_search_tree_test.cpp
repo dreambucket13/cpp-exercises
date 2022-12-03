@@ -124,22 +124,22 @@ TEST_CASE("can_create_complex_tree")
 //     test_sort(make_tree<uint32_t>({2, 1, 3, 6, 7, 5}), {1, 2, 3, 5, 6, 7});
 // }
 
-// strings
+//strings
 
-// TEST_CASE("can_create_complex_tree_strings")
-// {
-//     auto tested = make_tree<std::string>({"delicious", "ballon", "flag", "apple", "cat", "elispsis", "grains"});
+TEST_CASE("can_create_complex_tree_strings")
+{
+    auto tested = make_tree<std::string>({"delicious", "ballon", "flag", "apple", "cat", "elispsis", "grains"});
 
-//     test_leaf<std::string>(tested, "delicious", true, true);
-//     test_leaf<std::string>(tested->left(), "ballon", true, true);
-//     test_leaf<std::string>(tested->right(), "flag", true, true);
+    test_leaf<std::string>(tested, "delicious", true, true);
+    test_leaf<std::string>(tested->left(), "ballon", true, true);
+    test_leaf<std::string>(tested->right(), "flag", true, true);
 
-//     test_leaf<std::string>(tested->left()->left(), "apple", false, false);
-//     test_leaf<std::string>(tested->left()->right(), "cat", false, false);
+    test_leaf<std::string>(tested->left()->left(), "apple", false, false);
+    test_leaf<std::string>(tested->left()->right(), "cat", false, false);
 
-//     test_leaf<std::string>(tested->right()->left(), "elispsis", false, false);
-//     test_leaf<std::string>(tested->right()->right(), "grains", false, false);
-// }
+    test_leaf<std::string>(tested->right()->left(), "elispsis", false, false);
+    test_leaf<std::string>(tested->right()->right(), "grains", false, false);
+}
 
 // TEST_CASE("can_sort_complex_tree_strings")
 // {

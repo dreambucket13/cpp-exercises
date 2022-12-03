@@ -10,11 +10,13 @@ namespace binary_search_tree {
 template <class T>
 class binary_tree {
 
+using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
+
     private:
 
         T nodeValue;
-        std::unique_ptr<binary_tree<T>> leftPtr;
-        std::unique_ptr<binary_tree<T>> rightPtr;
+        tree_ptr leftPtr;
+        tree_ptr rightPtr;
         binary_tree<T>* parent;
         std::vector<T> sortedList;
         std::vector<T> initialList;
@@ -35,19 +37,32 @@ class binary_tree {
 
     public:
 
-        class Iterator {
-            
-            Iterator begin(){
-                sort();
-                return Iterator(sortedObjects.begin());
-            }
+        struct Iterator 
+        {
 
-            Iterator end(){
-                sort();
-                return Iterator(sortedObjects.end());
-            }
+            //using tree_ptr<T> = std::unique_ptr<binary_search_tree::binary_tree<T>> 
+            //the iterator is looking for unique_ptrs to trees....
+            using iterator_category = std::forward_iterator_tag;
+            using difference_type   = std::ptrdiff_t;
+            using value_type        = binary_tree<T>;
+            using pointer           = binary_tree<T>*;
+            using reference         = binary_tree<T>&;
 
-        };    
+            Iterator(pointer ptr) : m_ptr(ptr) {}
+
+            reference operator*() const { return *m_ptr; }
+            pointer operator->() { return m_ptr; }
+            Iterator& operator++() { m_ptr++; return *this; }  
+            Iterator operator++(int) { Iterator tmp = *this; ++(*this); return tmp; }
+            friend bool operator== (const Iterator& a, const Iterator& b) { return a.m_ptr == b.m_ptr; };
+            friend bool operator!= (const Iterator& a, const Iterator& b) { return a.m_ptr != b.m_ptr; };  
+
+        private:
+            pointer m_ptr;
+        };
+
+        Iterator begin() { return Iterator(&sortedObjects[0]); }
+        Iterator end()   { return Iterator(&sortedObjects.back()); }
 
         binary_tree(T data) {
             nodeValue = data;
@@ -59,11 +74,11 @@ class binary_tree {
 
         //& after type returns a reference to the unique ptr without 
         //changing ownership.
-        std::unique_ptr<binary_tree<T>>& left() {
+        tree_ptr& left() {
             return leftPtr;
         }
 
-        std::unique_ptr<binary_tree<T>>& right() {
+        tree_ptr& right() {
             return rightPtr;
         }
 
@@ -79,7 +94,7 @@ class binary_tree {
             if (addedData <= data()){
 
                 if (left() == nullptr){
-                    leftPtr = std::unique_ptr<binary_tree<T>> (new binary_tree<T>(addedData));
+                    leftPtr = tree_ptr (new binary_tree<T>(addedData));
                     leftPtr->parent = this;
                 } else {
                     leftPtr->insert(addedData);
@@ -88,7 +103,7 @@ class binary_tree {
             } else {
 
                 if (right() == nullptr){
-                    rightPtr = std::unique_ptr<binary_tree<T>> (new binary_tree<T>(addedData));
+                    rightPtr = tree_ptr (new binary_tree<T>(addedData));
                     rightPtr->parent = this;
                 } else {
                     rightPtr->insert(addedData);
@@ -108,12 +123,11 @@ class binary_tree {
 
         }
 
-
         std::vector<binary_tree<T>*> sort(){
 
             //keep a list of dead-end nodes and the sorted objects.  
             //go left unless it is a dead end node, else go right.
-            //a node is dead ended if it is min and does not have children.
+            //a node is dead ended if it is min and does not have non-dead end children.
 
             binary_tree<T>* root = this;
             binary_tree<T>* index = root;
@@ -132,7 +146,7 @@ class binary_tree {
 
                 if (leftIsDeadEnd && rightIsDeadEnd){
                     deadEnds.push_back(index);
-                   // index = root;
+                    index = root;
                 } 
                 
                 if ( (rawLeft == nullptr || leftIsDeadEnd) && !objectIsSorted){
