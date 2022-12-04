@@ -93,7 +93,7 @@ using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
             nodeValue = data;
             leftPtr = nullptr;
             rightPtr = nullptr;
-            initialList.push_back(nodeValue);
+
             ++size;
 
             sortedObjects = std::vector<binary_tree<T>*>() ;
@@ -118,12 +118,11 @@ using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
 
         void insert(T addedData){
 
-            initialList.push_back(addedData);
             ++size;
 
             internal_insert(addedData);
 
-            sortedList = this->sort();
+            //sortedList = this->sort();
 
         }
 
@@ -135,6 +134,67 @@ using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
                 return leftPtr->min();
             }
 
+        }
+
+        //idea - implement a "next" method given a node.  Each node owning it's own sorted list 
+        //seems to be problematic.  
+        binary_tree<T>* next(int currentIndex){
+
+            //keep a list of dead-end nodes and the sorted objects.  
+            //go left unless it is a dead end node, else go right.
+            //a node is dead ended if it is min and does not have non-dead end children.
+
+            int counter = 0;
+            int next = ++currentIndex;
+
+            binary_tree<T>* root = this;
+            binary_tree<T>* index = root;
+
+            std::vector<binary_tree<T>*> sortedObjects = std::vector<binary_tree<T>*>() ;
+            std::vector<binary_tree<T>*> deadEnds = std::vector<binary_tree<T>*>();
+            std::vector<T>sortedList = std::vector<T>();
+
+            while (!isIn(deadEnds, root)){
+                
+                binary_tree<T>* rawLeft = index->leftPtr.get();
+                binary_tree<T>* rawRight = index->rightPtr.get();
+                bool leftIsDeadEnd = isIn(deadEnds, rawLeft);
+                bool rightIsDeadEnd = isIn(deadEnds, rawRight);
+                bool objectIsSorted = isIn(sortedObjects, index);
+
+                if (leftIsDeadEnd && rightIsDeadEnd){
+                    deadEnds.push_back(index);
+                    index = root;
+                } 
+                
+                if ( (rawLeft == nullptr || leftIsDeadEnd) && !objectIsSorted){
+
+                    sortedObjects.push_back(index);
+                    sortedList.push_back(index->nodeValue);
+
+                    if (counter == next){
+                        return index;
+                    } else {
+                        ++counter;
+                    }
+
+
+                    if (rawRight == nullptr || rightIsDeadEnd){
+                        deadEnds.push_back(index);
+                    }
+
+                    index = root;
+
+                } else if (rawLeft != nullptr && !leftIsDeadEnd){
+                    index = rawLeft;
+                } else if (rawRight != nullptr && !rightIsDeadEnd) {
+                    index = rawRight;
+                } 
+
+            }
+
+            return nullptr;
+            
         }
 
         std::vector<T>& sort(){

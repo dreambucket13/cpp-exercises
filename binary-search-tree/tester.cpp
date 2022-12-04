@@ -20,9 +20,21 @@ int main(){
     test_tree->insert(5);
     test_tree->insert(7);
 
+
+
+
     // auto test_tree = std::unique_ptr<binary_search_tree::binary_tree<string>>(new binary_search_tree::binary_tree<string>("b"));
     // test_tree->insert("a");
     // test_tree->insert("c");
+
+
+    for (int i = 0; i < 10; i++){
+        if (test_tree->next(i) != nullptr){
+            cout << i << " next: " << test_tree->next(i)->data() << endl;
+        } else {
+            cout << i << " next: not in tree" << endl;
+        }
+    }
 
     //test_tree->sort();
 
