@@ -18,7 +18,7 @@ using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
         tree_ptr leftPtr;
         tree_ptr rightPtr;
         binary_tree<T>* parent;
-
+        std::vector<T> sortedList;
         std::vector<T> initialList;
         std::size_t size = 0;   
 
@@ -61,33 +61,32 @@ using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
 
     public:
 
-        std::vector<T> sortedList;
-
         struct Iterator 
         {
 
             using iterator_category = std::forward_iterator_tag;
             using difference_type   = std::ptrdiff_t;
-            using value_type        = T;
-            using pointer           = T*;
-            using reference         = T&;
+            using value_type        = binary_tree<T>;
+            using pointer           = binary_tree<T>*;
+            using reference         = binary_tree<T>&;
 
-            Iterator(pointer ptr) : m_ptr(ptr) {}
+            Iterator(pointer ptr) : currentNode(ptr) {}
+            Iterator() { currentNode = nullptr; }
 
-            reference operator*() const { return *m_ptr; }
-            pointer operator->() { return m_ptr; }
-            Iterator& operator++() { m_ptr++; return *this; }  
+            reference operator*() const { return *currentNode; }
+            pointer operator->() { return currentNode; }
+            Iterator& operator++() { currentNode++; return next(currentNode); }  
             Iterator operator++(int) { Iterator tmp = *this; ++(*this); return tmp; }
-            friend bool operator== (const Iterator& a, const Iterator& b) { return a.m_ptr == b.m_ptr; };
-            friend bool operator!= (const Iterator& a, const Iterator& b) { return a.m_ptr != b.m_ptr; };  
+            friend bool operator== (const Iterator& a, const Iterator& b) { return a.currentNode == b.currentNode; };
+            friend bool operator!= (const Iterator& a, const Iterator& b) { return a.currentNode != b.currentNode; };  
 
         private:
-            pointer m_ptr;
+            pointer currentNode;
         };
     
 
-        Iterator begin() { return sortedList.begin(); }
-        Iterator end()   { return sortedList.end(); }
+        Iterator begin() { return min()->nodeValue; }
+        Iterator end()   { return nullptr; }
 
         binary_tree(T data) {
             nodeValue = data;

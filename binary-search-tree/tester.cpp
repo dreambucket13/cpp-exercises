@@ -12,7 +12,7 @@ int main(){
     //build a test tree
 
     auto test_tree = std::unique_ptr<binary_search_tree::binary_tree<uint32_t>>(new binary_search_tree::binary_tree<uint32_t>(4));
-    test_tree->insert(2);
+    //test_tree->insert(2);
     test_tree->insert(6);
     test_tree->insert(3);
     test_tree->insert(8);
@@ -30,9 +30,9 @@ int main(){
 
     for (int i = 0; i < 10; i++){
         if (test_tree->next(i) != nullptr){
-            cout << i << " next: " << test_tree->next(i)->data() << endl;
+            cout << i+1 << "th element next: " << test_tree->next(i)->data() << endl;
         } else {
-            cout << i << " next: not in tree" << endl;
+            cout << i+1 << "th element next: not in tree" << endl;
         }
     }
 
