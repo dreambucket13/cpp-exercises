@@ -18,22 +18,6 @@ using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
         tree_ptr leftPtr;
         tree_ptr rightPtr;
         binary_tree<T>* parent;
-        std::vector<T> sortedList;
-        std::vector<T> initialList;
-        std::size_t size = 0;   
-
-        std::vector<binary_tree<T>*> sortedObjects;
-        std::vector<binary_tree<T>*> deadEnds;
-
-        bool isIn(std::vector<binary_tree<T>*> treeVector, binary_tree<T>* key){
-            for (auto element : treeVector){
-                if (element == key){
-                    return true;
-                }
-            }
-            return false;
-        }   
-
 
     public:
 
@@ -70,12 +54,6 @@ using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
             rightPtr = nullptr;
             parent = nullptr;
 
-            ++size;
-
-            sortedObjects = std::vector<binary_tree<T>*>() ;
-            deadEnds = std::vector<binary_tree<T>*>();
-            sortedList = std::vector<T>();
-
         }
 
         //& after type returns a reference to the unique ptr without 
@@ -93,8 +71,6 @@ using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
         }
 
         void insert(T addedData){
-
-            ++size;
 
             if (addedData <= data()){
 
@@ -152,54 +128,6 @@ using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
 
         }
 
-        std::vector<T>& sort(){
-
-            //keep a list of dead-end nodes and the sorted objects.  
-            //go left unless it is a dead end node, else go right.
-            //a node is dead ended if it is min and does not have non-dead end children.
-
-            binary_tree<T>* root = this;
-            binary_tree<T>* index = root;
-
-            sortedObjects.clear();
-            deadEnds.clear();
-            sortedList.clear();
-
-            while (!isIn(deadEnds, root)){
-                
-                binary_tree<T>* rawLeft = index->leftPtr.get();
-                binary_tree<T>* rawRight = index->rightPtr.get();
-                bool leftIsDeadEnd = isIn(deadEnds, rawLeft);
-                bool rightIsDeadEnd = isIn(deadEnds, rawRight);
-                bool objectIsSorted = isIn(sortedObjects, index);
-
-                if (leftIsDeadEnd && rightIsDeadEnd){
-                    deadEnds.push_back(index);
-                    index = root;
-                } 
-                
-                if ( (rawLeft == nullptr || leftIsDeadEnd) && !objectIsSorted){
-
-                    sortedObjects.push_back(index);
-                    sortedList.push_back(index->nodeValue);
-
-                    if (rawRight == nullptr || rightIsDeadEnd){
-                        deadEnds.push_back(index);
-                    }
-
-                    index = root;
-
-                } else if (rawLeft != nullptr && !leftIsDeadEnd){
-                    index = rawLeft;
-                } else if (rawRight != nullptr && !rightIsDeadEnd) {
-                    index = rawRight;
-                } 
-
-            }
-
-            return sortedList;
-            
-        }
 };
 
 
