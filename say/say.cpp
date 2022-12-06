@@ -52,7 +52,7 @@ std::string in_english(uint64_t input){
                     break;
                 case HUNDREDS:
                     maskedInput = input % 1000;
-                    typeString = "hundred";
+                    typeString = "";
                     break;
                 default:
                     maskedInput = input;
@@ -70,13 +70,14 @@ std::string in_english(uint64_t input){
         std::string toString(){
 
             std::string output = "";
+            std::string conditionalHundred = "";
 
-            if (type == HUNDREDS && hundreds == 0){
-                typeString = "";
+            if (hundreds > 0){
+                conditionalHundred = " hundred ";
             }
 
             if (!isEmpty()){
-                output += digitToString(hundreds) + " " + lessThan99ToString() + " " + typeString;
+                output += digitToString(hundreds) + conditionalHundred + lessThan99ToString() + " " + typeString;
             }
 
             return output;
