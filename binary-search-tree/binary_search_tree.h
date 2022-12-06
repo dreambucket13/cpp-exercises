@@ -104,7 +104,7 @@ using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
 
         }
 
-        //idea - implement a "next" method given a node.  Each node owning it's own sorted list 
+        //implement a "next" method given a node.  Each node owning it's own sorted list 
         //seems to be problematic.  
 
         binary_tree<T>* up_tree(){
