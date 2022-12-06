@@ -11,24 +11,31 @@ int main(){
 
     //build a test tree
 
-    auto test_tree = std::unique_ptr<binary_search_tree::binary_tree<uint32_t>>(new binary_search_tree::binary_tree<uint32_t>(4));
-    test_tree->insert(2);
-    test_tree->insert(6);
-    test_tree->insert(3);
-    test_tree->insert(8);
-    test_tree->insert(1);
-    test_tree->insert(5);
-    test_tree->insert(7);
+    // auto test_tree = std::unique_ptr<binary_search_tree::binary_tree<uint32_t>>(new binary_search_tree::binary_tree<uint32_t>(4));
+    // test_tree->insert(2);
+    // test_tree->insert(6);
+    // test_tree->insert(3);
+    // test_tree->insert(8);
+    // test_tree->insert(1);
+    // test_tree->insert(5);
+    // test_tree->insert(7);
 
-    test_tree->left()->right()->next();
-    test_tree->right()->right()->next();
+    //"A", "few", "random", "strings", "that", "should", "be", "sorted"
+    auto test_tree = std::unique_ptr<binary_search_tree::binary_tree<string>>(new binary_search_tree::binary_tree<string>("A"));
+    test_tree->insert("few");
+    test_tree->insert("random");
+    test_tree->insert("strings");
+    test_tree->insert("that");
+    test_tree->insert("should");
+    test_tree->insert("be");
+    test_tree->insert("sorted");
 
-    // auto test_tree = std::unique_ptr<binary_search_tree::binary_tree<string>>(new binary_search_tree::binary_tree<string>("b"));
-    // test_tree->insert("a");
-    // test_tree->insert("c");
 
-
-    //test_tree->sort();
+    //"A", "be", "few", "random", "should", "sorted", "strings", "that"
+    for (auto &x : *test_tree)
+    {
+        cout << x << endl;
+    }
 
     return 0;
 }

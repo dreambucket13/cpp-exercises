@@ -88,7 +88,7 @@ TEST_CASE("can_create_complex_tree")
 // The tests below require an implementation of an iterator.
 // You can get more details here: http://www.cplusplus.com/reference/iterator/
 
-//#define ITERATOR
+#define ITERATOR
 
 #ifdef ITERATOR
 template <typename T>

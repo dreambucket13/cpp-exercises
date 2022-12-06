@@ -44,15 +44,15 @@ using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
             using difference_type   = std::ptrdiff_t;
             using value_type        = binary_tree<T>;
             using pointer           = binary_tree<T>*;
-            using reference         = binary_tree<T>&;
+            using reference         = T&;
 
             Iterator(pointer ptr) : currentNode(ptr) {}
             Iterator() { currentNode = nullptr; }
 
-            reference operator*() const { return *currentNode; }
+            reference operator*() const { return currentNode->nodeValue; }
             pointer operator->() { return currentNode; }
-            Iterator& operator++() { currentNode++; return next(currentNode); }  
-            Iterator operator++(int) { Iterator tmp = *this; ++(*this); return tmp; }
+            T& operator++() { currentNode = currentNode->next(); return currentNode->nodeValue; }  
+            // Iterator operator++(int) { Iterator tmp = *this; ++(*this); return tmp; }
             friend bool operator== (const Iterator& a, const Iterator& b) { return a.currentNode == b.currentNode; };
             friend bool operator!= (const Iterator& a, const Iterator& b) { return a.currentNode != b.currentNode; };  
 
@@ -61,13 +61,14 @@ using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
         };
     
 
-        Iterator begin() { return min()->nodeValue; }
-        Iterator end()   { return nullptr; }
+        Iterator begin() { return Iterator(min()); }
+        Iterator end()   { return Iterator(); }
 
         binary_tree(T data) {
             nodeValue = data;
             leftPtr = nullptr;
             rightPtr = nullptr;
+            parent = nullptr;
 
             ++size;
 
@@ -134,7 +135,7 @@ using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
 
             if (parent == nullptr){
                 return nullptr;
-            } else if (parent->nodeValue > nodeValue) {
+            } else if (parent->nodeValue >= nodeValue) {
                 return parent;
             } else {
                 return parent->up_tree();    
