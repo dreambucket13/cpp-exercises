@@ -10,6 +10,8 @@ TEST_CASE("zero")
     REQUIRE("zero" == say::in_english(0ULL));
 }
 
+#define EXERCISM_RUN_ALL_TESTS
+
 #if defined(EXERCISM_RUN_ALL_TESTS)
 TEST_CASE("one")
 {
