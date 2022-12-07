@@ -5,6 +5,7 @@
 #include <exception>
 #include <iostream>
 #include <stdexcept>
+#include <vector>
 
 namespace say {
 

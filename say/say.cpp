@@ -264,12 +264,23 @@ std::string in_english(uint64_t input){
     millions.generate(input);
     billions.generate(input);
 
+    #define STANDARD
+    #ifdef STANDARD
     std::string output = billions.toString() + " " +
                             millions.toString()+ " " +
                             thousands.toString()+ " " +
                             hundreds.toString();
 
     output = trim(output);
+    #endif
+
+    //#define EXTENSION
+    #ifdef EXTENSION
+
+    //insert "and" before the last "lessThan99" string, if hundreds, thousands, etc is not zero
+
+    #endif
+
     return output;
 
 }
