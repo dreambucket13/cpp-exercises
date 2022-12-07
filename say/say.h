@@ -9,6 +9,7 @@
 namespace say {
 
     std::string in_english(uint64_t input);
+    std::string trim(std::string rawString);
 
     enum numberSegment {
     BILLIONS,

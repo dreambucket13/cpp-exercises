@@ -2,6 +2,57 @@
 
 namespace say {
 
+std::string trim(std::string rawString){
+
+    //remove leading spaces
+    uint32_t i=0;
+    uint32_t leadingSpaces = 0;
+    while (i < rawString.size()){
+
+        if (rawString.substr(i,1) == " "){
+            leadingSpaces++;
+        } 
+
+        if (rawString.substr(i,1) != " "){
+            rawString.erase(0,leadingSpaces);
+            break;
+        } 
+
+        i++;
+    }
+
+    //remove trailing spaces
+    i = rawString.size() - 1;
+    uint32_t trailingSpaces = 0;
+    while (i > 0){
+
+        if (rawString.substr(i,1) == " "){
+            trailingSpaces++;
+        } 
+
+        if (rawString.substr(i,1) != " "){
+            rawString.erase(rawString.size() - trailingSpaces, trailingSpaces);
+            break;
+        } 
+
+        i--;
+    }
+
+    //remove double spaces
+    i=0; 
+    while (i < rawString.size()){
+        
+        if (rawString.substr(i,2) == "  "){
+            rawString.erase(i,1);
+        } 
+
+        i++;
+    }
+
+    return rawString;
+
+}
+
 std::string in_english(uint64_t input){
 
     /*define internal class for numbers...each segment can have hundreds, tens, or ones
@@ -90,30 +141,35 @@ std::string in_english(uint64_t input){
             std::string lessThan99 = "";
             std::string dash = "";
 
+            //only do dashes if there are ones
+            if (ones > 0){
+                dash = "-";
+            }
+
             switch (tens){
                 case 9:
-                    lessThan99 += "ninety";
+                    lessThan99 += "ninety" + dash + digitToString(ones);
                     break;
                 case 8:
-                    lessThan99 += "eighty";
+                    lessThan99 += "eighty" + dash + digitToString(ones);
                     break;                    
                 case 7:
-                    lessThan99 += "seventy";
+                    lessThan99 += "seventy" + dash + digitToString(ones);
                     break;  
                 case 6:
-                    lessThan99 += "sixty";
+                    lessThan99 += "sixty" + dash + digitToString(ones);
                     break;  
                 case 5:
-                    lessThan99 += "fifty";
+                    lessThan99 += "fifty" + dash + digitToString(ones);
                     break;                    
                 case 4:
-                    lessThan99 += "forty";
+                    lessThan99 += "forty" + dash + digitToString(ones);
                     break;  
                 case 3:
-                    lessThan99 += "thirty";
+                    lessThan99 += "thirty" + dash + digitToString(ones);
                     break;  
                 case 2:
-                    lessThan99 += "twenty";
+                    lessThan99 += "twenty" + dash + digitToString(ones);
                     break;  
                 case 1:
                     lessThan99 += teensToString();
@@ -125,47 +181,32 @@ std::string in_english(uint64_t input){
                     break;
             }           
 
-            if (ones > 0){
-                dash = "-";
-            }
-
-            return lessThan99 + dash + digitToString(ones);
+            return lessThan99;
         }
         std::string teensToString(){
             switch (ones){
                 case 9:
                     return "nineteen";
-                    break;
                 case 8:
-                    return "eighteen";
-                    break;                    
+                    return "eighteen";                  
                 case 7:
                     return "seventeen";
-                    break;  
                 case 6:
-                    return "sixteen";
-                    break;  
+                    return "sixteen"; 
                 case 5:
-                    return "fifteen";
-                    break;                    
+                    return "fifteen";                 
                 case 4:
                     return "fourteen";
-                    break;  
                 case 3:
                     return "thirteen";
-                    break;  
                 case 2:
                     return "twelve";
-                    break;  
                 case 1:
                     return "eleven";
-                    break;  
                 case 0:
                     return "ten";
-                    break;  
                 default:
                     return "";
-                    break;
             }           
         }
         std::string digitToString(uint64_t digit){
@@ -173,37 +214,26 @@ std::string in_english(uint64_t input){
             switch (digit){
                 case 9:
                     return "nine";
-                    break;
                 case 8:
-                    return "eight";
-                    break;                    
+                    return "eight";                  
                 case 7:
                     return "seven";
-                    break;  
                 case 6:
-                    return "six";
-                    break;  
+                    return "six"; 
                 case 5:
-                    return "five";
-                    break;                    
+                    return "five";                   
                 case 4:
                     return "four";
-                    break;  
                 case 3:
-                    return "three";
-                    break;  
+                    return "three"; 
                 case 2:
                     return "two";
-                    break;  
                 case 1:
                     return "one";
-                    break;  
                 case 0:
                     return ""; 
-                    break;
                 default:
                     return "";
-                    break;
             }
 
         }
@@ -238,7 +268,8 @@ std::string in_english(uint64_t input){
                             millions.toString()+ " " +
                             thousands.toString()+ " " +
                             hundreds.toString();
-    
+
+    output = trim(output);
     return output;
 
 }
