@@ -84,29 +84,30 @@ std::string in_english(uint64_t input){
 
         void generate(uint64_t input){
 
-            uint64_t maskedInput;
+            uint64_t mask = 1;
 
             switch (type) {
                 case BILLIONS:
-                    maskedInput = (input / 1000000000) % 1000;
+                    mask = 1000000000;
                     typeString = "billion";
                     break;
                 case MILLIONS:
-                    maskedInput = (input / 1000000) % 1000;
+                    mask = 1000000;
                     typeString = "million";
                     break;
                 case THOUSANDS:
-                    maskedInput = (input / 1000) % 1000;
+                    mask = 1000;
                     typeString = "thousand";
                     break;
                 case HUNDREDS:
-                    maskedInput = input % 1000;
+                    mask = 1;
                     typeString = "";
                     break;
                 default:
-                    maskedInput = input;
                     break;
             }
+
+            uint64_t maskedInput = (input / mask) % 1000;
 
             ones = maskedInput % 10;
             maskedInput = maskedInput / 10; //shift digit
