@@ -14,24 +14,25 @@ using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
 
     private:
 
+        //prefer default values to doing work within the constructor
         T nodeValue;
-        tree_ptr leftPtr;
-        tree_ptr rightPtr;
-        binary_tree<T>* parent;
+        tree_ptr leftPtr = nullptr;
+        tree_ptr rightPtr = nullptr;
+        binary_tree<T>* parent = nullptr;
 
     public:
-
-        struct Iterator 
+        //use classes when there is an invariant; structs when each member can vary independently
+        class Iterator 
         {
-
+        public:
             using iterator_category = std::forward_iterator_tag;
             using difference_type   = std::ptrdiff_t;
             using value_type        = T;
             using pointer           = T*;
             using reference         = T&;
 
-            Iterator(binary_tree<T>* ptr) : currentNode(ptr) {}
-            Iterator() { currentNode = nullptr; }
+            explicit Iterator(binary_tree<T>* ptr) : currentNode(ptr) {}
+            Iterator() {} 
 
             reference operator*() const { return currentNode->nodeValue; }
             pointer operator->() { return &currentNode->nodeValue; }
@@ -41,33 +42,29 @@ using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
             friend bool operator!= (const Iterator& a, const Iterator& b) { return a.currentNode != b.currentNode; };  
 
         private:
-            binary_tree<T>* currentNode;
+            binary_tree<T>* currentNode = nullptr;
             T currentValue;
         };
     
 
-        Iterator begin() { return Iterator(min()); }
-        Iterator end()   { return Iterator(); }
+        const Iterator begin() { return Iterator(min()); }
+        const Iterator end()   { return Iterator(); }
 
-        binary_tree(T data) {
+        explicit binary_tree(T data) {
             nodeValue = data;
-            leftPtr = nullptr;
-            rightPtr = nullptr;
-            parent = nullptr;
-
         }
 
         //& after type returns a reference to the unique ptr without 
         //changing ownership.
-        tree_ptr& left() {
+        const tree_ptr& left() const {
             return leftPtr;
         }
 
-        tree_ptr& right() {
+        const tree_ptr& right() const {
             return rightPtr;
         }
 
-        T data() {
+        const T data() const {
             return nodeValue;
         }
 
@@ -75,7 +72,7 @@ using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
 
             if (addedData <= data()){
 
-                if (left() == nullptr){
+                if (!leftPtr){
                     leftPtr = tree_ptr (new binary_tree<T>(addedData));
                     leftPtr->parent = this;
                 } else {
@@ -84,7 +81,7 @@ using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
 
             } else {
 
-                if (right() == nullptr){
+                if (!rightPtr){
                     rightPtr = tree_ptr (new binary_tree<T>(addedData));
                     rightPtr->parent = this;
                 } else {
