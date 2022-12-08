@@ -26,22 +26,23 @@ using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
 
             using iterator_category = std::forward_iterator_tag;
             using difference_type   = std::ptrdiff_t;
-            using value_type        = binary_tree<T>;
-            using pointer           = binary_tree<T>*;
+            using value_type        = T;
+            using pointer           = T*;
             using reference         = T&;
 
-            Iterator(pointer ptr) : currentNode(ptr) {}
+            Iterator(binary_tree<T>* ptr) : currentNode(ptr) {}
             Iterator() { currentNode = nullptr; }
 
             reference operator*() const { return currentNode->nodeValue; }
-            pointer operator->() { return currentNode; }
+            pointer operator->() { return &currentNode->nodeValue; }
             T& operator++() { currentNode = currentNode->next(); return currentNode->nodeValue; }  
-            // Iterator operator++(int) { Iterator tmp = *this; ++(*this); return tmp; }
+            Iterator operator++(int) { Iterator tmp = *this; ++(*this); return tmp; }
             friend bool operator== (const Iterator& a, const Iterator& b) { return a.currentNode == b.currentNode; };
             friend bool operator!= (const Iterator& a, const Iterator& b) { return a.currentNode != b.currentNode; };  
 
         private:
-            pointer currentNode;
+            binary_tree<T>* currentNode;
+            T currentValue;
         };
     
 
