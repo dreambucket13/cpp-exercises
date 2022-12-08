@@ -4,17 +4,19 @@ namespace say {
 
 std::string trim(std::string rawString){
 
+    std::string editedString = rawString;
+
     //remove leading spaces
     uint32_t i=0;
     uint32_t leadingSpaces = 0;
-    while (i < rawString.size()){
+    while (i < editedString.size()){
 
-        if (rawString.substr(i,1) == " "){
+        if (editedString.substr(i,1) == " "){
             leadingSpaces++;
         } 
 
-        if (rawString.substr(i,1) != " "){
-            rawString.erase(0,leadingSpaces);
+        if (editedString.substr(i,1) != " "){
+            editedString.erase(0,leadingSpaces);
             break;
         } 
 
@@ -22,16 +24,16 @@ std::string trim(std::string rawString){
     }
 
     //remove trailing spaces
-    i = rawString.size() - 1;
+    i = editedString.size() - 1;
     uint32_t trailingSpaces = 0;
     while (i > 0){
 
-        if (rawString.substr(i,1) == " "){
+        if (editedString.substr(i,1) == " "){
             trailingSpaces++;
         } 
 
-        if (rawString.substr(i,1) != " "){
-            rawString.erase(rawString.size() - trailingSpaces, trailingSpaces);
+        if (editedString.substr(i,1) != " "){
+            editedString.erase(editedString.size() - trailingSpaces, trailingSpaces);
             break;
         } 
 
@@ -40,16 +42,16 @@ std::string trim(std::string rawString){
 
     //remove double spaces
     i=0; 
-    while (i < rawString.size()){
+    while (i < editedString.size()){
         
-        if (rawString.substr(i,2) == "  "){
-            rawString.erase(i,1);
+        if (editedString.substr(i,2) == "  "){
+            editedString.erase(i,1);
         } 
 
         i++;
     }
 
-    return rawString;
+    return editedString;
 
 }
 
@@ -62,18 +64,14 @@ std::string in_english(uint64_t input){
     class tNumberStructure{
     public:
 
-        uint64_t hundreds; 
-        uint64_t tens; 
-        uint64_t ones;  
+        uint64_t hundreds = 0; 
+        uint64_t tens = 0; 
+        uint64_t ones = 0;  
         numberSegment type;
-        std::string typeString;
+        std::string typeString = "";
 
         tNumberStructure(numberSegment inputType){
-            hundreds = 0; 
-            tens = 0; 
-            ones = 0;     
-            type = inputType; 
-            typeString = "";            
+            type = inputType;        
         }
 
         bool isEmpty(){
