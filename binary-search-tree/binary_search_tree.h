@@ -50,7 +50,7 @@ using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
         const Iterator begin() { return Iterator(min()); }
         const Iterator end()   { return Iterator(); }
 
-        explicit binary_tree(T data) {
+        explicit binary_tree(const T& data) {
             nodeValue = data;
         }
 
@@ -64,11 +64,12 @@ using tree_ptr = typename std::unique_ptr<binary_search_tree::binary_tree<T>>;
             return rightPtr;
         }
 
-        const T data() const {
+        const T& data() const {
             return nodeValue;
         }
 
-        void insert(T addedData){
+        //taking in value by const reference avoids copying
+        void insert(const T& addedData){
 
             if (addedData <= data()){
 
