@@ -51,6 +51,7 @@ if("${CMAKE_CXX_COMPILER_ID}" MATCHES "(GNU|Clang)")
     )
 endif()
 
+set(EXERCISM_RUN_ALL_TESTS TRUE)
 # Configure to run all the tests?
 if(${EXERCISM_RUN_ALL_TESTS})
     target_compile_definitions(${exercise} PRIVATE EXERCISM_RUN_ALL_TESTS)
