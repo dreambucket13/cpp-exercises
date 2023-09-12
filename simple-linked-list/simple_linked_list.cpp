@@ -9,10 +9,8 @@ std::size_t List::size() const {
 }
 
 void List::push(int entry) {
-    // TODO: Implement a function that pushes an Element with `entry` as data to
-    // the front of the list.
 
-    auto pushed_element = new simple_linked_list::List::Element(entry);
+    auto pushed_element = new Element(entry);
 
     //head needs to move over 
     pushed_element->next = head;
@@ -23,36 +21,43 @@ void List::push(int entry) {
 }
 
 int List::pop() {
-    // TODO: Implement a function that returns the data value of the first
-    // element in the list then discard that element.
 
-    int popped = head->data;
-    auto old_head = head;
+    if (head == nullptr){
+        return 0;
+    }
 
+    int popped_data = head->data;
+    Element* popped_element = head;
     head = head->next;
     --current_size;
-    delete old_head;
 
-    return popped;
+    delete popped_element;
+
+    return popped_data;
 }
 
 void List::reverse() {
-    // TODO: Implement a function to reverse the order of the elements in the
-    // list.
 
-    auto reversed = new simple_linked_list::List();
+    Element* previous = nullptr;
+    Element* node = head;
 
-    while (this->head != nullptr){
-        reversed->push(this->pop());
+    while (node != nullptr){
+        Element* temp = node->next;
+        node->next = previous;
+        previous = node;
+        node = temp;
     }
 
-    this->head = reversed->head;
-    delete reversed;
+    head = previous;
 
 }
 
 List::~List() {
-    // TODO: Ensure that all resources are freed on destruction
+
+    while (head != nullptr){
+        pop();
+    }
+    
 }
 
 }  // namespace simple_linked_list
